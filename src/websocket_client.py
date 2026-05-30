@@ -8,7 +8,7 @@ from utils.events import IncomingEvent
 
 async def send_message(websocket: ServerConnection, message: json) -> None:
     if not isinstance(message, dict):
-        raise ValueError("Message must be a dictionary")
+        raise ValueError("Message must be a dictionary.")
 
     await websocket.send(json.dumps(message))
 

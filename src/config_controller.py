@@ -4,17 +4,17 @@ from database.models import Config
 from database.services.config import ConfigService
 
 
-class GlobalConfig:
+class ConfigController:
     """
-    Singleton class to manage global configuration settings for the application.
+    Singleton class to manage configuration settings for the application.
     This class is designed to be initialized only once and provides access to configuration settings
     """
 
-    _instance: Union["GlobalConfig", None] = None
+    _instance: Union["ConfigController", None] = None
 
-    def __new__(cls, config: Config) -> "GlobalConfig":
+    def __new__(cls, config: Config) -> "ConfigController":
         if not cls._instance:
-            cls._instance = super(GlobalConfig, cls).__new__(cls)
+            cls._instance = super(ConfigController, cls).__new__(cls)
             cls._instance._init(config)
 
         return cls._instance
@@ -29,7 +29,7 @@ class GlobalConfig:
         self._microphone_volume = config.microphone_volume
         self.headphone_muted = config.headphone_muted
 
-        print(f"[Global Config] 🔧 Global config synced with database: [{config}]")
+        print(f"[Config] 🔧 Config synced with database: [{config}]")
 
     @property
     def host(self) -> str:
@@ -78,4 +78,4 @@ class GlobalConfig:
 
 
 config_service = ConfigService()
-config = GlobalConfig(config_service.get())
+config = ConfigController(config_service.get())

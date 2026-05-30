@@ -5,8 +5,8 @@ import signal
 
 import websockets
 
-from global_config import config
-from handlers.global_event_handler import GlobalEventHandler
+from config_controller import config
+from handlers.event_handler import EventHandler
 from websocket_state import state
 
 
@@ -19,13 +19,16 @@ async def echo(websocket: websockets.ServerConnection):
 
     :param websocket: The websocket connection to handle.
     """
+
     if state.connected_websocket is None:
         state.connected_websocket = websocket
+    if state.connected_websocket != websocket:
+        return
 
     try:
         while True:
             event = await websocket.recv()
-            await GlobalEventHandler.handle_event(json.loads(event))
+            await EventHandler.handle_event(json.loads(event))
     except websockets.ConnectionClosed:
         print("[Websocket] ❌ Connection closed")
         os.kill(os.getpid(), signal.SIGILL)

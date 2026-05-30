@@ -5,7 +5,7 @@ from typing import Union
 import sounddevice as sd
 import soundfile as sf
 
-from global_config import config
+from config_controller import config
 from utils.errors import (
     PlaybackDeviceAmbiguousError,
     PlaybackDeviceNotFoundError,
@@ -154,11 +154,11 @@ class SoundController:
         ]
 
         if not voicemeeter_playback:
-            raise PlaybackDeviceNotFoundError("Voicemeeter Input device not found")
+            raise PlaybackDeviceNotFoundError("Voicemeeter Input device not found.")
 
         if len(voicemeeter_playback) > 1:
             raise PlaybackDeviceAmbiguousError(
-                "Multiple Voicemeeter Input devices found"
+                "Multiple Voicemeeter Input devices found."
             )
 
         return voicemeeter_playback[0]

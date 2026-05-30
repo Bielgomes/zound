@@ -18,10 +18,10 @@ class Sound(BaseModel):
         """
 
         if not isinstance(path, str):
-            raise ValueError("Sound path must be an string")
+            raise ValueError("Sound path must be an string.")
 
         if not path.endswith((".mp3", ".wav")):
-            raise ValueError("Sound path must end with .mp3 or .wav")
+            raise ValueError("Sound path must end with .mp3 or .wav.")
 
         return path
 
@@ -43,10 +43,10 @@ class UpdateSound(BaseModel):
         """
 
         if not isinstance(path, str):
-            raise ValueError("Sound path must be an string")
+            raise ValueError("Sound path must be an string.")
 
         if not path.endswith((".mp3", ".wav")):
-            raise ValueError("Sound path must end with .mp3 or .wav")
+            raise ValueError("Sound path must end with .mp3 or .wav.")
 
         return path
 

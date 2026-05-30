@@ -2,7 +2,7 @@ import asyncio
 from pathlib import Path
 
 from database.services.sound import SoundService
-from handlers.global_event_handler import GlobalEventHandler
+from handlers.event_handler import EventHandler
 from sound_controller import sound_controller
 from utils.errors import (
     MissingFieldError,
@@ -13,7 +13,7 @@ from utils.functions import send_message, update_sound_is_valid_and_notify
 sound_service = SoundService()
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_ADD)
+@EventHandler.register(IncomingEvent.SOUND_ADD)
 async def handle_sound_add(event: dict) -> None:
     sound = event.get("data", None)
     if sound is None:
@@ -25,7 +25,7 @@ async def handle_sound_add(event: dict) -> None:
     )
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_UPDATE)
+@EventHandler.register(IncomingEvent.SOUND_UPDATE)
 async def handle_sound_update(event: dict) -> None:
     sound = event.get("data", None)
     if sound is None:
@@ -37,7 +37,7 @@ async def handle_sound_update(event: dict) -> None:
     )
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_REMOVE)
+@EventHandler.register(IncomingEvent.SOUND_REMOVE)
 async def handle_sound_remove(event: dict) -> None:
     sound_id = event.get("soundId", None)
     if sound_id is None:
@@ -49,7 +49,7 @@ async def handle_sound_remove(event: dict) -> None:
     )
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_FETCH)
+@EventHandler.register(IncomingEvent.SOUND_FETCH)
 async def handle_sound_fetch(event: dict) -> None:
     sounds = sound_service.get_all()
     await send_message(
@@ -57,7 +57,7 @@ async def handle_sound_fetch(event: dict) -> None:
     )
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_PLAY)
+@EventHandler.register(IncomingEvent.SOUND_PLAY)
 async def handle_sound_play(event: dict) -> None:
     sound_id = event.get("soundId", None)
     if sound_id is None:
@@ -81,6 +81,6 @@ async def handle_sound_play(event: dict) -> None:
     await sound_controller.play_sound(sound.path, sound_id, asyncio.get_event_loop())
 
 
-@GlobalEventHandler.register(IncomingEvent.SOUND_STOP)
+@EventHandler.register(IncomingEvent.SOUND_STOP)
 async def handle_sound_stop(_) -> None:
     sound_controller.stop_sound()

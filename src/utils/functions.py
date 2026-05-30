@@ -13,10 +13,10 @@ async def send_message(message: json) -> None:
     :param message: The message to send.
     """
     if state.connected_websocket is None:
-        raise RuntimeError("No connected websocket")
+        raise RuntimeError("No connected websocket.")
 
     if not isinstance(message, dict):
-        raise ValueError("Message must be a dictionary")
+        raise ValueError("Message must be a dictionary.")
 
     await state.connected_websocket.send(json.dumps(message))
 

@@ -10,7 +10,7 @@ from utils.events import ErrorEvent
 from utils.functions import send_message
 
 
-class GlobalEventHandler:
+class EventHandler:
     """
     Class to handle global events from the websocket connection.
 
@@ -28,11 +28,11 @@ class GlobalEventHandler:
         """
 
         def wrapper(handler: Coroutine):
-            if event in GlobalEventHandler.__handlers:
-                raise ValueError(f"❌ Event handler for {event} already registered")
+            if event in EventHandler.__handlers:
+                raise ValueError(f"❌ Event handler for {event} already registered.")
 
-            GlobalEventHandler.__handlers[event] = handler
-            print(f"[Global Event Handler] 📦 {event.value} registered event handler")
+            EventHandler.__handlers[event] = handler
+            print(f"[Event Handler] 📦 {event.value} registered event handler")
             return handler
 
         return wrapper
@@ -46,13 +46,13 @@ class GlobalEventHandler:
 
         :param event: The event received from the client.
         """
-        print(f"[Global Event Handler] 📫 Received event: {event}")
+        print(f"[Event Handler] 📫 Received event: {event}")
 
         try:
             if not event.get("type"):
                 raise MissingFieldError("type")
 
-            handler = GlobalEventHandler.__handlers.get(event["type"])
+            handler = EventHandler.__handlers.get(event["type"])
             if handler is None:
                 raise UnsupportedEventError(event["type"])
 
