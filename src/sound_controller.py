@@ -4,7 +4,6 @@ from typing import Union
 
 import sounddevice as sd
 import soundfile as sf
-import websockets
 
 from global_config import config
 from utils.errors import (
@@ -53,7 +52,6 @@ class SoundController:
         self,
         sound_path: str,
         sound_id: int,
-        websocket: websockets.ServerConnection,
         loop: asyncio.AbstractEventLoop,
     ):
         """
@@ -62,7 +60,6 @@ class SoundController:
 
         :param sound_path: Path to the sound file to be played.
         :param sound_id: ID of the sound being played.
-        :param websocket: Websocket connection to send messages to.
         :param loop: The asyncio event loop to run the coroutine in.
         """
 
@@ -72,7 +69,7 @@ class SoundController:
         playback_device = await self.__get_playback_device()
         self._playback_thread = threading.Thread(
             target=self.__play_sound,
-            args=(playback_device, sound_path, sound_id, websocket, loop),
+            args=(playback_device, sound_path, sound_id, loop),
         )
         self._playback_thread.start()
 
@@ -81,7 +78,6 @@ class SoundController:
         device_id: int,
         sound_path: str,
         sound_id: int,
-        websocket: websockets.ServerConnection,
         loop: asyncio.AbstractEventLoop,
     ):
         self._sound_file = sf.SoundFile(sound_path)
@@ -105,7 +101,6 @@ class SoundController:
 
         asyncio.run_coroutine_threadsafe(
             send_message(
-                websocket,
                 {
                     "type": OutgoingEvent.SOUND_PLAYING,
                     "soundId": sound_id,
@@ -136,7 +131,6 @@ class SoundController:
 
         asyncio.run_coroutine_threadsafe(
             send_message(
-                websocket,
                 {
                     "type": OutgoingEvent.SOUND_STOPPED,
                     "soundId": sound_id,

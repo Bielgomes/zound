@@ -1,17 +1,18 @@
 import json
 
-import websockets
+from websocket_state import state
 
 
-async def send_message(websocket: websockets.ServerConnection, message: json) -> None:
+async def send_message(message: json) -> None:
     """
     Send a message to the client.
 
-    :param websocket: The websocket connection to send the message to.
     :param message: The message to send.
     """
+    if state.connected_websocket is None:
+        raise RuntimeError("No connected websocket")
 
     if not isinstance(message, dict):
         raise ValueError("Message must be a dictionary")
 
-    await websocket.send(json.dumps(message))
+    await state.connected_websocket.send(json.dumps(message))

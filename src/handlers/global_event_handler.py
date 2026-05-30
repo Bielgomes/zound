@@ -1,8 +1,6 @@
 import traceback
 from typing import Coroutine
 
-import websockets
-
 from utils.errors import (
     EventError,
     MissingFieldError,
@@ -34,21 +32,21 @@ class GlobalEventHandler:
                 raise ValueError(f"❌ Event handler for {event} already registered")
 
             GlobalEventHandler.__handlers[event] = handler
-            print(f"📦 {event.value} registered event handler")
+            print(f"[Global Event Handler] 📦 {event.value} registered event handler")
             return handler
 
         return wrapper
 
     @staticmethod
-    async def handle_event(websocket: websockets.ServerConnection, event: dict) -> None:
+    async def handle_event(event: dict) -> None:
         """
         Handle events received from the websocket connection.
 
         This function checks the event type and performs the corresponding action.
 
-        :param websocket: The websocket connection to send the message to.
         :param event: The event received from the client.
         """
+        print(f"[Global Event Handler] 📫 Received event: {event}")
 
         try:
             if not event.get("type"):
@@ -58,11 +56,10 @@ class GlobalEventHandler:
             if handler is None:
                 raise UnsupportedEventError(event["type"])
 
-            await handler(websocket, event)
+            await handler(event)
 
         except EventError as error:
             await send_message(
-                websocket,
                 {
                     "type": error.type,
                     "error": str(error),
@@ -71,7 +68,6 @@ class GlobalEventHandler:
         except Exception as error:
             print(traceback.format_exc())
             await send_message(
-                websocket,
                 {
                     "type": ErrorEvent.GENERIC_ERROR,
                     "error": str(error),

@@ -1,5 +1,3 @@
-import websockets
-
 from database.services.config import ConfigService
 from global_config import config as global_config
 from handlers.global_event_handler import GlobalEventHandler
@@ -11,12 +9,9 @@ config_service = ConfigService()
 
 
 @GlobalEventHandler.register(IncomingEvent.CONFIG_FETCH)
-async def handle_config_fetch(
-    websocket: websockets.ServerConnection, event: dict
-) -> None:
+async def handle_config_fetch(event: dict) -> None:
     config = config_service.get()
     await send_message(
-        websocket,
         {
             "type": OutgoingEvent.CONFIG_FETCHED,
             "config": config.model_dump(),
@@ -25,9 +20,7 @@ async def handle_config_fetch(
 
 
 @GlobalEventHandler.register(IncomingEvent.CONFIG_UPDATE)
-async def handle_config_update(
-    websocket: websockets.ServerConnection, event: dict
-) -> None:
+async def handle_config_update(event: dict) -> None:
     config = event.get("config", None)
     if config is None:
         raise MissingFieldError("config")
@@ -39,7 +32,6 @@ async def handle_config_update(
     global_config.headphone_muted = config.get("headphone_muted", False)
 
     await send_message(
-        websocket,
         {
             "type": OutgoingEvent.CONFIG_UPDATED,
             "config": config,

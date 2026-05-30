@@ -7,6 +7,7 @@ import websockets
 
 from global_config import config
 from handlers.global_event_handler import GlobalEventHandler
+from websocket_state import state
 
 
 async def echo(websocket: websockets.ServerConnection):
@@ -14,23 +15,25 @@ async def echo(websocket: websockets.ServerConnection):
     Handle incoming websocket connections and events.
     This function receives events from the websocket and processes them using the global event handler.
 
+    Uses a global variable to store the connected websocket.
+
     :param websocket: The websocket connection to handle.
     """
+    if state.connected_websocket is None:
+        state.connected_websocket = websocket
 
     try:
         while True:
             event = await websocket.recv()
-            print(f"📫 Received event: {event}")
-
-            await GlobalEventHandler.handle_event(websocket, json.loads(event))
+            await GlobalEventHandler.handle_event(json.loads(event))
     except websockets.ConnectionClosed:
-        print("❌ Connection closed")
-        os.kill(os.getpid(), signal.SIGINT)
+        print("[Websocket] ❌ Connection closed")
+        os.kill(os.getpid(), signal.SIGILL)
 
 
 async def main():
     async with websockets.serve(echo, config.host, config.port) as server:
-        print(f"🚀 Server started on ws://{config.host}:{config.port}")
+        print(f"[Websocket] 🚀 Server started on ws://{config.host}:{config.port}")
         await server.serve_forever()
 
 

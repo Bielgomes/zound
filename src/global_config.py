@@ -29,7 +29,7 @@ class GlobalConfig:
         self._microphone_volume = config.microphone_volume
         self.headphone_muted = config.headphone_muted
 
-        print("🔧 Config synced with database: { " + f"{config}" + " }")
+        print(f"[Global Config] 🔧 Global config synced with database: [{config}]")
 
     @property
     def host(self) -> str:
