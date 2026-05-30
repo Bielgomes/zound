@@ -8,9 +8,7 @@ from utils.errors import (
     MissingFieldError,
 )
 from utils.events import IncomingEvent, OutgoingEvent
-from utils.functions import (
-    send_message,
-)
+from utils.functions import send_message, update_sound_is_valid_and_notify
 
 sound_service = SoundService()
 
@@ -66,18 +64,19 @@ async def handle_sound_play(event: dict) -> None:
         raise MissingFieldError("soundId")
 
     sound = sound_service.get(sound_id)
+    is_sound_path_valid = Path(sound.path).is_file()
 
-    updated_sound_valid = None
-    if Path(sound.path).is_file() and not sound.is_valid:
-        updated_sound_valid = True
-    elif sound.is_valid:
-        updated_sound_valid = False
+    if is_sound_path_valid is True and not sound.is_valid:
+        update_sound_is_valid_and_notify(
+            sound_service=sound_service, sound=sound, is_valid=True
+        )
+    elif is_sound_path_valid is False and sound.is_valid:
+        return update_sound_is_valid_and_notify(
+            sound_service=sound_service, sound=sound, is_valid=False
+        )
 
-    if updated_sound_valid is not None:
-        sound.is_valid = updated_sound_valid
-        sound_service.set_is_valid(sound.id, is_valid=updated_sound_valid)
-        message = {"type": OutgoingEvent.SOUND_UPDATED, "sound": sound.model_dump()}
-        await send_message(message)
+    if not is_sound_path_valid:
+        return
 
     await sound_controller.play_sound(sound.path, sound_id, asyncio.get_event_loop())
 
