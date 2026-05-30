@@ -12,10 +12,13 @@ class Sound(BaseModel):
 
     @field_validator("path")
     @classmethod
-    def validate_path(cls, path: str) -> str:
+    def validate_path(cls, path: any) -> str:
         """
         Validate the sound path to ensure it ends with .mp3 or .wav.
         """
+
+        if not isinstance(path, str):
+            raise ValueError("Sound path must be an string")
 
         if not path.endswith((".mp3", ".wav")):
             raise ValueError("Sound path must end with .mp3 or .wav")
@@ -34,12 +37,15 @@ class UpdateSound(BaseModel):
 
     @field_validator("path")
     @classmethod
-    def validate_path(cls, path: str) -> str:
+    def validate_path(cls, path: any) -> str:
         """
         Validate the sound path to ensure it ends with .mp3 or .wav.
         """
 
-        if path is not None and not path.endswith((".mp3", ".wav")):
+        if not isinstance(path, str):
+            raise ValueError("Sound path must be an string")
+
+        if not path.endswith((".mp3", ".wav")):
             raise ValueError("Sound path must end with .mp3 or .wav")
 
         return path
