@@ -1,13 +1,10 @@
 import sqlite3
-from typing import Union
 
 
 class SQLite:
     """
     SQLite class to manage the database connection.
     """
-
-    _instance: Union["SQLite", None] = None
 
     def __init__(self, db_path: str) -> None:
         """
@@ -16,12 +13,7 @@ class SQLite:
         :param db_path: Path to the SQLite database file.
         """
 
-        if SQLite._instance is not None:
-            raise Exception("This class is a singleton!")
-
-        SQLite._instance = self
         self.db_path = db_path
-
         self.__initialize_database()
 
     def connection(self: "SQLite") -> sqlite3.Connection:
@@ -29,7 +21,7 @@ class SQLite:
         Get the SQLite connection.
         """
 
-        return sqlite3.connect(self._instance.db_path)
+        return sqlite3.connect(self.db_path)
 
     def __initialize_database(self) -> None:
         """
@@ -45,6 +37,7 @@ class SQLite:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name VARCHAR(255) NOT NULL,
                 path VARCHAR(255) NOT NULL,
+                hotkey VARCHAR(50),
                 is_valid BOOLEAN NOT NULL DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
@@ -76,4 +69,4 @@ class SQLite:
             print("[Database] ✅ Database initialized successfully!")
 
 
-sqlite = SQLite("database.db")
+sqlite = SQLite(db_path="database.db")
