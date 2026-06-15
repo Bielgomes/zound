@@ -1,7 +1,5 @@
-from typing import Union
-
 from database.models import Sound, UpdateSound
-from database.repositories.abstract_repository import AbstractRepository
+from repositories.abstract_repository import AbstractRepository
 
 
 class SoundRepository(AbstractRepository):
@@ -37,22 +35,27 @@ class SoundRepository(AbstractRepository):
     def get_all(self) -> list[Sound]:
         self._cursor.execute(
             """
-            SELECT id, name, path, is_valid, created_at
+            SELECT id, name, path, hotkey, is_valid, created_at
             FROM sound
             """
         )
         rows = self._cursor.fetchall()
         return [
             Sound(
-                id=row[0], name=row[1], path=row[2], is_valid=row[3], created_at=row[4]
+                id=row[0],
+                name=row[1],
+                path=row[2],
+                hotkey=row[3],
+                is_valid=row[4],
+                created_at=row[5],
             )
             for row in rows
         ]
 
-    def get(self, id: int) -> Union[Sound, None]:
+    def get(self, id: int) -> Sound | None:
         self._cursor.execute(
             """
-            SELECT id, name, path, is_valid, created_at
+            SELECT id, name, path, hotkey, is_valid, created_at
             FROM sound
             WHERE id = ?
             """,
@@ -61,12 +64,17 @@ class SoundRepository(AbstractRepository):
         row = self._cursor.fetchone()
         if row:
             return Sound(
-                id=row[0], name=row[1], path=row[2], is_valid=row[3], created_at=row[4]
+                id=row[0],
+                name=row[1],
+                path=row[2],
+                hotkey=row[3],
+                is_valid=row[4],
+                created_at=row[5],
             )
 
         return None
 
-    def update(self, id: int, sound: UpdateSound) -> Union[Sound, None]:
+    def update(self, id: int, sound: UpdateSound) -> Sound | None:
         fields = {
             "name": sound.name,
             "path": sound.path,

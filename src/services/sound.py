@@ -1,5 +1,5 @@
 from database.models import Sound, UpdateSound
-from database.repositories.sound import SoundRepository
+from repositories.sound import SoundRepository
 from utils.errors import SoundNotFoundError, ValidationError
 
 

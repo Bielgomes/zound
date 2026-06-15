@@ -1,9 +1,11 @@
 import asyncio
 from pathlib import Path
 
-from database.services.sound import SoundService
-from handlers.event_handler import EventHandler
-from sound_controller import sound_controller
+from controllers.config_controller import config as config_controller
+from controllers.sound_controller import sound_controller
+from event_handler import EventHandler
+from services.config import ConfigService
+from services.sound import SoundService
 from utils.errors import (
     MissingFieldError,
 )
@@ -11,6 +13,7 @@ from utils.events import IncomingEvent, OutgoingEvent
 from utils.functions import send_message, update_sound_is_valid_and_notify
 
 sound_service = SoundService()
+config_service = ConfigService()
 
 
 @EventHandler.register(IncomingEvent.SOUND_ADD)
@@ -84,3 +87,34 @@ async def handle_sound_play(event: dict) -> None:
 @EventHandler.register(IncomingEvent.SOUND_STOP)
 async def handle_sound_stop(_) -> None:
     sound_controller.stop_sound()
+
+
+@EventHandler.register(IncomingEvent.CONFIG_FETCH)
+async def handle_config_fetch(_) -> None:
+    config = config_service.get()
+    await send_message(
+        {
+            "type": OutgoingEvent.CONFIG_FETCHED,
+            "config": config.model_dump(),
+        },
+    )
+
+
+@EventHandler.register(IncomingEvent.CONFIG_UPDATE)
+async def handle_config_update(event: dict) -> None:
+    config = event.get("config", None)
+    if config is None:
+        raise MissingFieldError("config.")
+
+    config_service.update(config)
+
+    config_controller.headphone_volume = config.get("headphone_volume", 0.5)
+    config_controller.microphone_volume = config.get("microphone_volume", 0.5)
+    config_controller.headphone_muted = config.get("headphone_muted", False)
+
+    await send_message(
+        {
+            "type": OutgoingEvent.CONFIG_UPDATED,
+            "config": config,
+        },
+    )

@@ -1,7 +1,6 @@
-from typing import Union
+from services.config import ConfigService
 
-from database.models import Config
-from database.services.config import ConfigService
+config_service = ConfigService()
 
 
 class ConfigController:
@@ -10,20 +9,15 @@ class ConfigController:
     This class is designed to be initialized only once and provides access to configuration settings
     """
 
-    _instance: Union["ConfigController", None] = None
-
-    def __new__(cls, config: Config) -> "ConfigController":
-        if not cls._instance:
-            cls._instance = super(ConfigController, cls).__new__(cls)
-            cls._instance._init(config)
-
-        return cls._instance
-
-    def _init(self, config: Config) -> None:
+    def __init__(self) -> None:
         self._host = "localhost"
         self._port = 4358
 
         self._chunk_size = 1024
+        self.__sync_database()
+
+    def __sync_database(self):
+        config = config_service.get()
 
         self._headphone_volume = config.headphone_volume
         self._microphone_volume = config.microphone_volume
@@ -77,5 +71,4 @@ class ConfigController:
             raise ValueError("Muted status must be a boolean.")
 
 
-config_service = ConfigService()
-config = ConfigController(config_service.get())
+config = ConfigController()

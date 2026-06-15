@@ -46,6 +46,7 @@ class EventHandler:
 
         :param event: The event received from the client.
         """
+
         print(f"[Event Handler] 📫 Received event: {event}")
 
         try:

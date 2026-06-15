@@ -1,11 +1,10 @@
 import asyncio
 import threading
-from typing import Union
 
 import sounddevice as sd
 import soundfile as sf
 
-from config_controller import config
+from controllers.config_controller import config
 from utils.errors import (
     PlaybackDeviceAmbiguousError,
     PlaybackDeviceNotFoundError,
@@ -20,18 +19,12 @@ class SoundController:
     This class is responsible for playing sound files and managing the playback thread.
     """
 
-    _instance: Union["SoundController", None] = None
+    def __init__(self) -> None:
+        self._stop_event: threading.Event | None = threading.Event()
+        self._playback_thread: threading.Thread | None = None
 
-    _stop_event: Union[threading.Event, None] = threading.Event()
-    _playback_thread: Union[threading.Thread, None] = None
-
-    _sound_file: Union[sf.SoundFile, None] = None
-    _streamed: int = 0
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(SoundController, cls).__new__(cls)
-        return cls._instance
+        self._sound_file: sf.SoundFile | None = None
+        self._streamed: int = 0
 
     def stop_sound(self):
         """

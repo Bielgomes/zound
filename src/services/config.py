@@ -1,5 +1,5 @@
 from database.models import Config
-from database.repositories.config import ConfigRepository
+from repositories.config import ConfigRepository
 from utils.errors import ConfigNotFoundError, ValidationError
 
 

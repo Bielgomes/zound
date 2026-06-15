@@ -1,7 +1,7 @@
 import json
 
 from database.models import Sound
-from database.services.sound import SoundService
+from services.sound import SoundService
 from utils.events import OutgoingEvent
 from websocket_state import state
 
@@ -12,6 +12,9 @@ async def send_message(message: json) -> None:
 
     :param message: The message to send.
     """
+
+    print(f"[Event Handler] 📪 Response sent: {json.dumps(message)}")
+
     if state.connected_websocket is None:
         raise RuntimeError("No connected websocket.")
 

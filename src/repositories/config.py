@@ -1,7 +1,5 @@
-from typing import Union
-
 from database.models import Config
-from database.repositories.abstract_repository import AbstractRepository
+from repositories.abstract_repository import AbstractRepository
 
 
 class ConfigRepository(AbstractRepository):
@@ -12,7 +10,7 @@ class ConfigRepository(AbstractRepository):
     def __init__(self):
         super().__init__()
 
-    def get(self) -> Union[Config, None]:
+    def get(self) -> Config | None:
         self._cursor.execute(
             """
             SELECT id, headphone_volume, microphone_volume, headphone_muted
