@@ -5,8 +5,7 @@ import signal
 
 import websockets
 
-from config_controller import config
-from handlers.event_handler import EventHandler
+from controllers.config_controller import config
 from websocket_state import state
 
 
