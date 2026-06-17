@@ -23,7 +23,7 @@ async def echo(websocket: websockets.ServerConnection):
 
     if state.connected_websocket is None:
         state.connected_websocket = websocket
-    if state.connected_websocket != websocket:
+    if state.connected_websocket.id != websocket.id:
         return
 
     try:
