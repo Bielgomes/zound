@@ -104,6 +104,17 @@ class SoundRepository(AbstractRepository):
         )
         self._commit()
 
+    def set_hotkey(self, id: str, hotkey: str) -> None:
+        self._cursor.execute(
+            """
+            UPDATE sound
+            SET hotkey = ?
+            WHERE id = ?
+            """,
+            (hotkey, id),
+        )
+        self._commit()
+
     def set_is_valid(self, id: str, is_valid: bool) -> None:
         self._cursor.execute(
             """

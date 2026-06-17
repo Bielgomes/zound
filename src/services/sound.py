@@ -66,6 +66,19 @@ class SoundService:
 
         self.__sound_repository.delete(id)
 
+    def set_hotkey(self, id: str, hotkey: str) -> Sound:
+        """
+        Set the hotkey of a sound record by ID.
+        """
+
+        sound = self.__sound_repository.get(id)
+        if not sound:
+            raise SoundNotFoundError(id)
+
+        self.__sound_repository.set_hotkey(id, hotkey)
+        sound.hotkey = hotkey
+        return sound.model_dump()
+
     def set_is_valid(self, id: str, is_valid: bool) -> None:
         """
         Set the validity of a sound record by ID.

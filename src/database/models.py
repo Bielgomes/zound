@@ -1,12 +1,16 @@
+import re
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+hotkey_regex = re.compile(r"^(?:<[a-zA-Z0-9]+>|[^+])(?:\+(?:<[a-zA-Z0-9]+>|[^+]))*$")
 
 
 class Sound(BaseModel):
     id: Optional[str] = Field(default=None, title="Sound ID")
     name: str = Field(..., min_length=1, max_length=255, title="Sound Name")
     path: str = Field(..., min_length=1, max_length=255, title="Sound Path")
+    hotkey: Optional[str] = Field(default=None, title="Hotkey")
     is_valid: bool = Field(default=True, title="Is Valid")
     created_at: Optional[str] = Field(None, title="Creation Date")
 
@@ -24,6 +28,22 @@ class Sound(BaseModel):
             raise ValueError("Sound path must end with .mp3 or .wav.")
 
         return path
+
+    @field_validator("hotkey")
+    @classmethod
+    def validate_hotkey(cls, hotkey: any) -> str:
+        if hotkey is None:
+            return None
+
+        if not isinstance(hotkey, str):
+            raise ValueError("Sound hotkey must be a string.")
+
+        if not hotkey_regex.fullmatch(hotkey):
+            raise ValueError(
+                "Invalid hotkey format. (e.g., 'a', '<alt>+h', '<ctrl>+<shift>+c')"
+            )
+
+        return hotkey
 
 
 class UpdateSound(BaseModel):

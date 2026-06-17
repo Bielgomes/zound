@@ -1,7 +1,7 @@
-import asyncio
 from pathlib import Path
 
 from controllers.config_controller import config as config_controller
+from controllers.keyboard_controller import keyboard_controller
 from controllers.sound_controller import sound_controller
 from event_handler import EventHandler
 from services.config import ConfigService
@@ -36,6 +36,24 @@ async def handle_sound_update(event: dict) -> None:
         raise MissingFieldError("data")
 
     updated_sound = sound_service.update(sound["id"], sound)
+    await send_message(
+        {"type": OutgoingEvent.SOUND_UPDATED, "sound": updated_sound},
+    )
+
+
+@EventHandler.register(IncomingEvent.SOUND_UPDATE_HOTKEY)
+async def handle_sound_update_hotkey(event: dict) -> None:
+    sound_id = event.get("soundId", None)
+    if sound_id is None:
+        raise MissingFieldError("SoundId")
+
+    hotkey = event.get("hotkey", None)
+    if hotkey is None:
+        raise MissingFieldError("hotkey")
+
+    updated_sound = sound_service.set_hotkey(sound_id, hotkey)
+    keyboard_controller.update_hotkey(sound_id, hotkey)
+
     await send_message(
         {"type": OutgoingEvent.SOUND_UPDATED, "sound": updated_sound},
     )
@@ -108,10 +126,7 @@ async def handle_config_update(event: dict) -> None:
         raise MissingFieldError("config.")
 
     config_service.update(config)
-
-    config_controller.headphone_volume = config.get("headphone_volume", 0.5)
-    config_controller.microphone_volume = config.get("microphone_volume", 0.5)
-    config_controller.headphone_muted = config.get("headphone_muted", False)
+    config_controller.update(config)
 
     await send_message(
         {
