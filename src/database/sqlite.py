@@ -45,7 +45,7 @@ class SQLite:
 
             config_table = """
             CREATE TABLE IF NOT EXISTS config (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY CHECK (id = 1),
                 headphone_volume REAL NOT NULL,
                 microphone_volume REAL NOT NULL,
                 headphone_muted BOOLEAN NOT NULL
@@ -55,15 +55,12 @@ class SQLite:
             cursor.execute(sound_table)
             cursor.execute(config_table)
 
-            cursor.execute("SELECT COUNT(*) FROM config")
-            count = cursor.fetchone()[0]
-            if count == 0:
-                cursor.execute(
-                    """
-                    INSERT INTO config (headphone_volume, microphone_volume, headphone_muted)
-                    VALUES (0.5, 0.5, 0)
-                    """
-                )
+            cursor.execute(
+                """
+                INSERT OR IGNORE INTO config (id, headphone_volume, microphone_volume, headphone_muted)
+                VALUES (1, 0.5, 0.5, 0)
+                """
+            )
 
             connection.commit()
             print("[Database] ✅ Database initialized successfully!")

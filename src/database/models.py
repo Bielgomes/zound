@@ -52,7 +52,6 @@ class UpdateSound(BaseModel):
 
 
 class Config(BaseModel):
-    id: Optional[int] = Field(default=None, title="Config ID")
     headphone_volume: float = Field(
         default=0.5, ge=0.0, le=1.0, title="Headphone Volume"
     )

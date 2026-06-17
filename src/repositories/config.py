@@ -13,19 +13,18 @@ class ConfigRepository(AbstractRepository):
     def get(self) -> Config | None:
         self._cursor.execute(
             """
-            SELECT id, headphone_volume, microphone_volume, headphone_muted
+            SELECT headphone_volume, microphone_volume, headphone_muted
             FROM config
-            WHERE id = 1
+            LIMIT 1
             """
         )
 
         row = self._cursor.fetchone()
         if row:
             return Config(
-                id=row[0],
-                headphone_volume=row[1],
-                microphone_volume=row[2],
-                headphone_muted=row[3],
+                headphone_volume=row[0],
+                microphone_volume=row[1],
+                headphone_muted=row[2],
             )
 
         return None
