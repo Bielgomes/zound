@@ -6,6 +6,8 @@ import signal
 import websockets
 
 from controllers.config_controller import config
+from event_handler import EventHandler
+from events import *  # noqa: F403
 from websocket_state import state
 
 
