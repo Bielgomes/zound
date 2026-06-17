@@ -31,7 +31,7 @@ class SoundService:
         sounds = [sound.model_dump() for sound in self.__sound_repository.get_all()]
         return sounds
 
-    def get(self, id: int) -> Sound:
+    def get(self, id: str) -> Sound:
         """
         Get a sound record by ID.
         """
@@ -42,7 +42,7 @@ class SoundService:
 
         return sound
 
-    def update(self, id: int, sound: dict) -> dict:
+    def update(self, id: str, sound: dict) -> dict:
         """
         Update a sound record by ID.
         """
@@ -55,7 +55,7 @@ class SoundService:
         updated_sound = self.__sound_repository.update(id, sound)
         return updated_sound.model_dump()
 
-    def delete(self, id: int) -> None:
+    def delete(self, id: str) -> None:
         """
         Delete a sound record by ID.
         """
@@ -66,7 +66,7 @@ class SoundService:
 
         self.__sound_repository.delete(id)
 
-    def set_is_valid(self, id: int, is_valid: bool) -> None:
+    def set_is_valid(self, id: str, is_valid: bool) -> None:
         """
         Set the validity of a sound record by ID.
         """

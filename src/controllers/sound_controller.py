@@ -44,7 +44,7 @@ class SoundController:
     async def play_sound(
         self,
         sound_path: str,
-        sound_id: int,
+        sound_id: str,
         loop: asyncio.AbstractEventLoop,
     ):
         """
@@ -70,7 +70,7 @@ class SoundController:
         self,
         device_id: int,
         sound_path: str,
-        sound_id: int,
+        sound_id: str,
         loop: asyncio.AbstractEventLoop,
     ):
         self._sound_file = sf.SoundFile(sound_path)

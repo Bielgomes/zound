@@ -18,6 +18,7 @@ class ConfigRepository(AbstractRepository):
             WHERE id = 1
             """
         )
+
         row = self._cursor.fetchone()
         if row:
             return Config(

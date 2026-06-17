@@ -1,5 +1,9 @@
+from cuid2 import cuid_wrapper
+
 from database.models import Sound, UpdateSound
 from repositories.abstract_repository import AbstractRepository
+
+cuid_generator = cuid_wrapper()
 
 
 class SoundRepository(AbstractRepository):
@@ -11,25 +15,22 @@ class SoundRepository(AbstractRepository):
         super().__init__()
 
     def create(self, sound: Sound) -> Sound:
+        sound.id = cuid_generator()
+
         self._cursor.execute(
             """
-            INSERT INTO sound (name, path)
-            VALUES (?, ?)
+            INSERT INTO sound (id, name, path)
+            VALUES (?, ?, ?)
+            RETURNING created_at
             """,
-            (sound.name, sound.path),
+            (sound.id, sound.name, sound.path),
         )
+
+        row = self._cursor.fetchone()
+        if row:
+            sound.created_at = row[0]
+
         self._commit()
-
-        sound.id = self._cursor.lastrowid
-        sound.created_at = self._cursor.execute(
-            """
-            SELECT created_at
-            FROM sound
-            WHERE id = ?
-            """,
-            (sound.id,),
-        ).fetchone()[0]
-
         return sound
 
     def get_all(self) -> list[Sound]:
@@ -39,6 +40,7 @@ class SoundRepository(AbstractRepository):
             FROM sound
             """
         )
+
         rows = self._cursor.fetchall()
         return [
             Sound(
@@ -52,7 +54,7 @@ class SoundRepository(AbstractRepository):
             for row in rows
         ]
 
-    def get(self, id: int) -> Sound | None:
+    def get(self, id: str) -> Sound | None:
         self._cursor.execute(
             """
             SELECT id, name, path, hotkey, is_valid, created_at
@@ -74,7 +76,7 @@ class SoundRepository(AbstractRepository):
 
         return None
 
-    def update(self, id: int, sound: UpdateSound) -> Sound | None:
+    def update(self, id: str, sound: UpdateSound) -> Sound | None:
         fields = {
             "name": sound.name,
             "path": sound.path,
@@ -92,7 +94,7 @@ class SoundRepository(AbstractRepository):
 
         return self.get(id)
 
-    def delete(self, id: int) -> None:
+    def delete(self, id: str) -> None:
         self._cursor.execute(
             """
             DELETE FROM sound
@@ -102,7 +104,7 @@ class SoundRepository(AbstractRepository):
         )
         self._commit()
 
-    def set_is_valid(self, id: int, is_valid: bool) -> None:
+    def set_is_valid(self, id: str, is_valid: bool) -> None:
         self._cursor.execute(
             """
             UPDATE sound

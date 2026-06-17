@@ -36,7 +36,7 @@ class InvalidSoundFileError(EventError):
 class SoundNotFoundError(EventError):
     """Raised when the sound is not found."""
 
-    def __init__(self, sound_id: int):
+    def __init__(self, sound_id: str):
         super().__init__(f"Sound with ID {sound_id} not found")
         self.type = ErrorEvent.SOUND_NOT_FOUND
 

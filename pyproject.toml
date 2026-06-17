@@ -5,6 +5,7 @@ description = "A simple soundpad application"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cuid2>=2.0.1",
     "pydantic>=2.11.2",
     "pynput>=1.8.2",
     "sounddevice>=0.5.1",
