@@ -11,6 +11,7 @@ from utils.errors import (
 )
 from utils.events import IncomingEvent, OutgoingEvent
 from utils.functions import send_message, update_sound_is_valid_and_notify
+from websocket_state import state
 
 sound_service = SoundService()
 config_service = ConfigService()
@@ -81,7 +82,7 @@ async def handle_sound_play(event: dict) -> None:
     if not is_sound_path_valid:
         return
 
-    await sound_controller.play_sound(sound.path, sound_id, asyncio.get_event_loop())
+    await sound_controller.play_sound(sound.path, sound_id, state.asyncio_loop)
 
 
 @EventHandler.register(IncomingEvent.SOUND_STOP)
