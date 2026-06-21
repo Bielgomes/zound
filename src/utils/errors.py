@@ -25,6 +25,14 @@ class ValidationError(EventError):
         self.type = ErrorEvent.VALIDATION_ERROR
 
 
+class HotkeyAlreadyUsedError(EventError):
+    """Raised when there is already a sound with the hotkey"""
+
+    def __init__(self, hotkey: str):
+        super().__init__(f"There is already a sound with this hotkey: {hotkey}")
+        self.type = ErrorEvent.HOTKEY_ALREADY_USED
+
+
 class InvalidSoundFileError(EventError):
     """Raised when the sound file can't be loaded."""
 

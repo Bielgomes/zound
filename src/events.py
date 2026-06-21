@@ -3,6 +3,7 @@ from pathlib import Path
 from controllers.config_controller import config as config_controller
 from controllers.keyboard_controller import keyboard_controller
 from controllers.sound_controller import sound_controller
+from database.models import Sound
 from event_handler import EventHandler
 from services.config import ConfigService
 from services.sound import SoundService
@@ -48,11 +49,10 @@ async def handle_sound_update_hotkey(event: dict) -> None:
         raise MissingFieldError("SoundId")
 
     hotkey = event.get("hotkey", None)
-    if hotkey is None:
-        raise MissingFieldError("hotkey")
+    Sound.validate_hotkey(hotkey)
 
-    updated_sound = sound_service.set_hotkey(sound_id, hotkey)
     keyboard_controller.update_hotkey(sound_id, hotkey)
+    updated_sound = sound_service.set_hotkey(sound_id, hotkey)
 
     await send_message(
         {"type": OutgoingEvent.SOUND_UPDATED, "sound": updated_sound},

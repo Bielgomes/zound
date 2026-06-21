@@ -5,6 +5,7 @@ from pynput import keyboard
 
 from event_handler import EventHandler
 from services.sound import SoundService
+from utils.errors import HotkeyAlreadyUsedError
 from utils.events import IncomingEvent
 from websocket_state import state
 
@@ -21,13 +22,22 @@ class KeyboardController:
         self.__create_listener()
         print("[Keyboard Controller] ✅ Keyboard listener initialized successfully!")
 
-    def update_hotkey(self, sound_id: str, hotkey: str):
+    def update_hotkey(self, sound_id: str, hotkey: str | None):
+        if hotkey is not None:
+            sound_with_same_hotkey = self._hotkeys.get(hotkey)
+            if (
+                sound_with_same_hotkey is not None
+                and sound_with_same_hotkey != sound_id
+            ):
+                raise HotkeyAlreadyUsedError(hotkey)
+
         hotkeys_values = list(self._hotkeys.values())
         if sound_id in hotkeys_values:
             old_hotkey = list(self._hotkeys.keys())[hotkeys_values.index(sound_id)]
             del self._hotkeys[old_hotkey]
 
-        self._hotkeys[hotkey] = sound_id
+        if hotkey is not None:
+            self._hotkeys[hotkey] = sound_id
 
         print("[Keyboard Controller] ✨ Recreating listener...")
         self.__create_listener()
