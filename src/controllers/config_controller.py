@@ -27,9 +27,9 @@ class ConfigController:
         print(f"[Config] 🔧 Config synced with database: [{config}]")
 
     def update(self, config: Config):
-        self.headphone_volume = config.get("headphone_volume", 0.5)
-        self.microphone_volume = config.get("microphone_volume", 0.5)
-        self.headphone_muted = config.get("headphone_muted", False)
+        self.headphone_volume = config["headphone_volume"]
+        self.microphone_volume = config["microphone_volume"]
+        self.headphone_muted = config["headphone_muted"]
 
     @property
     def host(self) -> str:
