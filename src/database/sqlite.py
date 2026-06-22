@@ -66,4 +66,4 @@ class SQLite:
             print("[Database] ✅ Database initialized successfully!")
 
 
-sqlite = SQLite(db_path="database.db")
+sqlite = SQLite(db_path="./database.db")

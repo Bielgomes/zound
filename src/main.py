@@ -1,7 +1,5 @@
 import asyncio
 import json
-import os
-import signal
 
 import websockets
 
@@ -21,10 +19,10 @@ async def echo(websocket: websockets.ServerConnection):
     :param websocket: The websocket connection to handle.
     """
 
-    if state.connected_websocket is None:
-        state.connected_websocket = websocket
-    if state.connected_websocket.id != websocket.id:
-        return
+    # if state.connected_websocket is None:
+    state.connected_websocket = websocket
+    # if state.connected_websocket.id != websocket.id:
+    #     return
 
     try:
         while True:
@@ -32,12 +30,14 @@ async def echo(websocket: websockets.ServerConnection):
             await EventHandler.handle_event(json.loads(event))
     except websockets.ConnectionClosed:
         print("[Websocket] ❌ Connection closed")
-        os.kill(os.getpid(), signal.SIGILL)
+        # os.kill(os.getpid(), signal.SIGILL)
 
 
 async def main():
     state.asyncio_loop = asyncio.get_running_loop()
-    async with websockets.serve(echo, config.host, config.port) as server:
+    async with websockets.serve(
+        echo, config.host, config.port, ping_interval=None, ping_timeout=None
+    ) as server:
         print(f"[Websocket] 🚀 Server started on ws://{config.host}:{config.port}")
         await server.serve_forever()
 
