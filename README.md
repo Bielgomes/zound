@@ -1,20 +1,18 @@
 # <img src="./images/icon.ico" alt="Zound logo" width="60"/> Zound
 
-[Zound](https://github.com/Bielgomes/zound) is an audio server that uses WebSocket to enable local sound control and playback.
-
 ![Issues](https://img.shields.io/github/issues/bielgomes/zound?style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/bielgomes/zound?style=for-the-badge)
 [![License](https://img.shields.io/github/license/bielgomes/zound?style=for-the-badge)](LICENSE)
 
 ![Linux-support](https://img.shields.io/badge/linux-not%20supported-rrr?style=flat)
 
+[Zound](https://github.com/Bielgomes/zound) is an audio server that uses WebSocket to enable local sound control and playback.
+
 > [!WARNING]
 > Zound depends on [Voicemeeter](https://vb-audio.com/Voicemeeter/) being installed, configured, and running properly. Follow this [Tutorial](https://www.youtube.com/watch?v=8ymkY6Ppyzo) for basic setup instructions!
 
-## For Devs
-
 > [!CAUTION]
-> Zound requires [Python 3.12](https://www.python.org/downloads/). Compatibility with earlier versions is not guaranteed!
+> *To developers*: Zound requires [Python 3.12](https://www.python.org/downloads/). Compatibility with earlier versions is not guaranteed!
 
 ## How to Run
 
