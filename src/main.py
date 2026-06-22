@@ -37,7 +37,9 @@ async def echo(websocket: websockets.ServerConnection):
 
 async def main():
     state.asyncio_loop = asyncio.get_running_loop()
-    async with websockets.serve(echo, config.host, config.port) as server:
+    async with websockets.serve(
+        echo, config.host, config.port, ping_interval=None, ping_timeout=None
+    ) as server:
         print(f"[Websocket] 🚀 Server started on ws://{config.host}:{config.port}")
         await server.serve_forever()
 
