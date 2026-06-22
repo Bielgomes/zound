@@ -8,11 +8,13 @@
 
 ![Linux-support](https://img.shields.io/badge/linux-not%20supported-rrr?style=flat)
 
-> [!CAUTION]
-> Zound requires [Python 3.12](https://www.python.org/downloads/). Compatibility with earlier versions is not guaranteed!
-
 > [!WARNING]
 > Zound depends on [Voicemeeter](https://vb-audio.com/Voicemeeter/) being installed, configured, and running properly. Follow this [Tutorial](https://www.youtube.com/watch?v=8ymkY6Ppyzo) for basic setup instructions!
+
+## For Devs
+
+> [!CAUTION]
+> Zound requires [Python 3.12](https://www.python.org/downloads/). Compatibility with earlier versions is not guaranteed!
 
 ## How to Run
 
